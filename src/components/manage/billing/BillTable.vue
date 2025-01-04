@@ -45,10 +45,10 @@ const handleInputChange = (id: number, event: Event) => {
               class="text-xs text-white uppercase bg-gray-800 dark:bg-[#4f4f53] dark:text-gray-200 sticky top-0 z-10"
             >
               <tr>
-                <th scope="col" class="pl-2 lg:pl-4 py-3"></th>
-                <th scope="col" class="pr-2 lg:pr-6 py-3">FOOD ITEM NAME</th>
-                <th scope="col" class="pl-2 lg:px-6 py-3">QTY.</th>
-                <th scope="col" class="pl-2 lg:px-6 py-3">PRICE (₹)</th>
+                <th scope="col" class="pl-1 lg:pl-4 py-3"></th>
+                <th scope="col" class="pr-1 lg:pr-0 py-3">FOOD ITEM NAME</th>
+                <th scope="col" class="pl-0 lg:px-6 py-3">QTY.</th>
+                <th scope="col" class="pl-3 lg:px-6 py-3">PRICE (₹)</th>
               </tr>
             </thead>
             <tbody>
@@ -57,21 +57,26 @@ const handleInputChange = (id: number, event: Event) => {
                 :key="i"
                 class="bg-gray-50 dark:bg-[#18181B] border-b dark:border-gray-700"
               >
-                <td class="pl-2 lg:pl-4 py-4">
-                  <img
+                <td class="py-4 w-[10%]">
+                  <div class="flex justify-center">
+                    <img
                     @click="baseStore.removeFoodItem(i)"
                     src="@/assets/icons/base/cross.svg"
                     alt="cross-icon"
-                    class="cursor-pointer"
-                  />
+                    class="cursor-pointer min-w-5 min-h-5"
+                    />
+                  </div>
                 </td>
                 <td
                   scope="row"
-                  class="pl-2 lg:pl-0 pr-2 lg:pr-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  class="py-4 w-[40%] font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
+                <div class="w-[37vw] lg:w-[17vw] truncate">
+
                   {{ item.value }}
+                </div>
                 </td>
-                <td class="px-2 lg:px-6 py-4">
+                <td class="py-4 w-[30%]">
                   <div
                     class="qty-input-group relative flex items-center justify-between gap-2 max-w-[10rem]"
                   >
@@ -102,7 +107,7 @@ const handleInputChange = (id: number, event: Event) => {
                       type="text"
                       v-model.number="item.qty"
                       maxlength="4"
-                      class="h-8 px-1 lg:px-3 text-center block w-full focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 text-black dark:text-white"
+                      class="h-8 px-1 lg:px-3 w-10 text-center block lg:w-full focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 text-black dark:text-white"
                       required
                     />
 
@@ -129,7 +134,7 @@ const handleInputChange = (id: number, event: Event) => {
                     </Button>
                   </div>
                 </td>
-                <td class="px-2 lg:px-6 py-4 font-semibold text-base">
+                <td class="pl-3 w-[25%] font-semibold text-base">
                   {{ item.price }}.00
                 </td>
               </tr>

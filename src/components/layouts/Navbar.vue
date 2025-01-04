@@ -44,7 +44,7 @@ const hello = () => {
           ><span class="truncate text-xs">Chinese Restaurant</span>
         </div>
       </div>
-      <RouterLink to="/">
+      <RouterLink to="/" class="mr-2">
         <Button v-if="route.path != '/'" size="sm" class="flex gap-[2px]">
           <img
           src="@/assets/icons/base/plus.svg"
