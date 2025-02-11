@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { useBaseStore } from "@/stores/useBaseStore";
 import FoodItemsSection from "@/components/manage/FoodItemsSection.vue";
 import BillingSection from "@/components/manage/BillingSection.vue"
 
-const baseStore = useBaseStore()
+const baseStore = useBaseStore();
+const router = useRouter();
+
+if(!baseStore.getSelectedTableData) router.push('/');
 </script>
 
 <template>

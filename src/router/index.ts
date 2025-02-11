@@ -2,6 +2,8 @@ import { createWebHistory, createRouter } from 'vue-router'
 import IndexPage from '@/pages/index.vue'
 import LoginPage from '@/pages/login.vue'
 import ManagePage from '@/pages/manage.vue'
+import OrdersPage from '@/pages/orders.vue'
+import SettingsPage from '@/pages/settings.vue'
 
 const routes = [
   { path: '/', component: IndexPage, name: 'IndexPage' },
@@ -9,6 +11,24 @@ const routes = [
     path: '/manage', 
     component: ManagePage, 
     name: 'ManagePage',
+    beforeEnter: (to: any, from: any, next: any) => {
+      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false');
+      isAuthenticated ? next() : next({ path: '/login' })
+    }
+  },
+  {
+    path: '/orders', 
+    component: OrdersPage, 
+    name: 'OrdersPage',
+    beforeEnter: (to: any, from: any, next: any) => {
+      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false');
+      isAuthenticated ? next() : next({ path: '/login' })
+    }
+  },
+  {
+    path: '/settings', 
+    component: SettingsPage, 
+    name: 'SettingsPage',
     beforeEnter: (to: any, from: any, next: any) => {
       const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false');
       isAuthenticated ? next() : next({ path: '/login' })

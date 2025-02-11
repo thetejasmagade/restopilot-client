@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useBaseStore } from "@/stores/useBaseStore";
 import Button from "@/components/ui/button/Button.vue";
 
 const route = useRoute();
+const router = useRouter();
 const baseStore = useBaseStore();
 
-const toggleTheme = () => document.body.classList.toggle("dark");
-
-const hello = () => {
-  localStorage.clear()
+const toggleTheme = () => {
+  document.body.classList.toggle("dark");
+  baseStore.handleDarkMode();
 }
+
+const newOrderHandler = () => {
+  baseStore.selectedTableDataHandler(null);
+  router.push("/");
+};
 </script>
 <template>
   <nav
@@ -33,6 +38,7 @@ const hello = () => {
           alt="hamburger-icon"
         />
       </div> -->
+      <RouterLink to="/">
       <div class="logo flex items-center justify-start gap-2 mr-6">
         <div
           class="w-10 h-10 rounded-md bg-primary flex items-center justify-center"
@@ -44,31 +50,41 @@ const hello = () => {
           ><span class="truncate text-xs">Chinese Restaurant</span>
         </div>
       </div>
-      <RouterLink to="/" class="mr-2">
-        <Button v-if="route.path != '/'" size="sm" class="flex gap-[2px]">
-          <img
+    </RouterLink>
+      <Button
+        @click="newOrderHandler()"
+        v-if="route.path != '/'"
+        size="sm"
+        class="flex gap-[2px]"
+      >
+        <img
           src="@/assets/icons/base/plus.svg"
           class="w-4 h-4 m-0"
           alt="plus-icon"
-          />
-          Create New Order
-        </Button>
-      </RouterLink>
+        />
+        Create New Order
+      </Button>
     </div>
-    <div class="flex items-center justify-end gap-2">
-      <RouterLink to="/login" class="text-primary">
+    <div class="md:flex items-center justify-end gap-2" :class="baseStore.getIsFoodItemsSectionOpen && route.path == '/manage' ? 'hidden' : 'flex'">
+      <RouterLink to="/orders" class="text-primary">
         <img
-          @click="hello()"
-          src="@/assets/icons/base/settings.svg"
+          src="@/assets/icons/base/pages.svg"
           alt="color-mode-sun"
           class="cursor-pointer"
         />
       </RouterLink>
+      <!-- <RouterLink to="/settings" class="text-primary">
+        <img
+          src="@/assets/icons/base/settings.svg"
+          alt="color-mode-sun"
+          class="cursor-pointer"
+        />
+      </RouterLink> -->
       <img
         @click="toggleTheme()"
         src="@/assets/icons/base/sun.svg"
         alt="color-mode-sun"
-        class="cursor-pointer hidden md:block"
+        class="cursor-pointer"
       />
     </div>
   </nav>

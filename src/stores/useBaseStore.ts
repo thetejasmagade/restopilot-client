@@ -1,12 +1,12 @@
 import { computed } from 'vue';
 import { defineStore } from 'pinia';
 
-interface Filter {
+export interface Filter {
   id: number;
   value: string;
 }
 
-interface Food {
+export interface Food {
   id: number;
   value: string;
   filter_id: number;
@@ -16,15 +16,43 @@ interface Food {
   qty: number;
 }
 
+export interface TableData {
+  id: number,
+  table_name: string,
+  status: number,
+  total_amt: number,
+  order_type: number,
+  items: Array<Food>
+}
+
+export interface SelectedTableData {
+  id: number,
+  area_name: string,
+  table: TableData,
+}
+
+interface CustomerInfo {
+  name: string,
+  mobile_no: string,
+  dob: string,
+}
+
 export const useBaseStore = defineStore('base', {
   state: () => ({
     isAuthenticated: false,
     sidebarOpen: true,
+    darkMode: false,
     selectedFilter: (JSON.parse(localStorage.getItem("data") || "null")?.filters[0]) || [],
     selectedFoodArray: [] as Food[],
     paymentType: 'cash' as 'cash' | 'card' | 'upi',
     totalAmt: 0,
     isFoodItemsSectionOpen: true,
+    selectedTableData: null as SelectedTableData | null,
+    customerInfo: {
+      name: '',
+      mobile_no: '',
+      dob: '',
+    } as CustomerInfo
   }),
   actions: {
     handleAuth() {
@@ -32,6 +60,9 @@ export const useBaseStore = defineStore('base', {
     },
     handleSidebar() {
       this.sidebarOpen = !this.isSidebarOpen;
+    },
+    handleDarkMode() {
+      this.darkMode = !this.darkMode;
     },
     handleSelectedFilter(filter: Filter) {
       this.selectedFilter = filter;
@@ -83,19 +114,40 @@ export const useBaseStore = defineStore('base', {
     resetData() {
       this.selectedFilter = (JSON.parse(localStorage.getItem("data") || "null")?.filters[0]) || [];
       this.selectedFoodArray = [];
+      this.selectedTableData = null;
       this.paymentType = 'cash';
       this.totalAmt = 0;
     },
     handleIsFoodItemsSectionOpen() {
       this.isFoodItemsSectionOpen = !this.isFoodItemsSectionOpen;
+    },
+    selectedTableDataHandler(data: SelectedTableData | null): void {
+      if(data) {
+        this.selectedTableData = data;
+        this.selectedFoodArray = data.table.items;
+        this.updateTotalAmt()
+      } else {
+        this.selectedTableData = null;
+        this.selectedFoodArray = [];
+      }
+    },
+    updateOrderTypeHandler(id: number): void {
+      if (this.selectedTableData?.table) {
+        this.selectedTableData.table.order_type = id;
+      } else {
+        console.error("selectedTableData or table is undefined");
+      }
     }
+    
   },
   getters: {
     isUserAuthenticated: (state) => state.isAuthenticated,
     isSidebarOpen: (state) => state.sidebarOpen,
+    isDarkMode: (state) => state.darkMode,
     selectedFoodType: (state) => state.selectedFilter,
     selectedFood: (state) => state.selectedFoodArray,
     getTotalAmt: (state) => state.totalAmt,
-    getIsFoodItemsSectionOpen: (state) => state.isFoodItemsSectionOpen
+    getIsFoodItemsSectionOpen: (state) => state.isFoodItemsSectionOpen,
+    getSelectedTableData: (state) => state.selectedTableData
   },
 });

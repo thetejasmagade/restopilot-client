@@ -10,8 +10,8 @@ const route = useRoute()
 
 <template>
     <div class="font-inter flex items-start justify-start w-full">
-        <div class="h-screen overflow-hidden transition-all duration-300 ease-in-out border-r bg-gray-100 dark:bg-[#18181B] lg:block"
-            :class="[route.name == 'ManagePage' ? 'w-[40%] lg:w-[16vw]' : 'w-0', baseStore.getIsFoodItemsSectionOpen ? 'block' : 'hidden']">
+        <div class="h-screen overflow-hidden transition-all duration-300 ease-in-out bg-gray-100 dark:bg-[#18181B] lg:block"
+            :class="[route.name == 'ManagePage' ? 'w-[40%] lg:w-[16vw] border-r' : 'w-0', baseStore.getIsFoodItemsSectionOpen ? 'block' : 'hidden']">
             <Sidebar />
         </div>
 

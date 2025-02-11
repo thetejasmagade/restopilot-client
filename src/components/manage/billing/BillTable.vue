@@ -4,6 +4,8 @@ import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import CustomerInfoModal from "@/components/manage/billing/CustomerInfoModal.vue";
+import { router } from "@/router";
 
 const baseStore = useBaseStore();
 
@@ -31,12 +33,63 @@ const handleInputChange = (id: number, event: Event) => {
   baseStore.selectedFoodArray[id].qty = Number(input.value); // Update qty with the numeric value
   baseStore.updateTotalAmt(); // Ensure totalAmt is updated
 };
+
+const handleKOT = async () => {
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-kot`;
+  const tableData = {
+    mobile: Number(localStorage.getItem("mobile_no")),
+    table_data_id: baseStore.selectedTableData?.id,
+    table_id: baseStore.selectedTableData?.table.id,
+    status: 1,
+    total_amt: baseStore.totalAmt,
+    order_type: baseStore.selectedTableData?.table.order_type,
+    items: baseStore.selectedFoodArray,
+  };
+  let response = await fetch(url, {
+    method: "POST", // HTTP method
+    headers: {
+      "Content-Type": "application/json", // Specify that we're sending JSON data
+    },
+    body: JSON.stringify(tableData), // Convert the data to a JSON string
+  });
+  if (response.status != 200) {
+    alert('Issue in updating record')
+  } else {
+    baseStore.resetData();
+    router.push('/');
+  }
+};
+
+const handleTempSave = async () => {
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/temp-save`;
+  const tableData = {
+    mobile: Number(localStorage.getItem("mobile_no")),
+    table_data_id: baseStore.selectedTableData?.id,
+    table_id: baseStore.selectedTableData?.table.id,
+    status: 2,
+  };
+  let response = await fetch(url, {
+    method: "POST", // HTTP method
+    headers: {
+      "Content-Type": "application/json", // Specify that we're sending JSON data
+    },
+    body: JSON.stringify(tableData), // Convert the data to a JSON string
+  });
+  if (response.status != 200) {
+    alert('Issue in updating record')
+  } else {
+    baseStore.resetData();
+    router.push('/');
+  }
+};
+
+
 </script>
 
 <template>
   <div>
     <div class="flex-col">
-      <div class="relative overflow-x-auto h-[72vh] responsive-h-scroll-div">
+      <div class="relative overflow-x-auto h-[67vh] responsive-h-scroll-div">
         <div v-if="baseStore.selectedFoodArray.length > 0">
           <table
             class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -60,10 +113,10 @@ const handleInputChange = (id: number, event: Event) => {
                 <td class="py-4 w-[10%]">
                   <div class="flex justify-center">
                     <img
-                    @click="baseStore.removeFoodItem(i)"
-                    src="@/assets/icons/base/cross.svg"
-                    alt="cross-icon"
-                    class="cursor-pointer min-w-5 min-h-5"
+                      @click="baseStore.removeFoodItem(i)"
+                      src="@/assets/icons/base/cross.svg"
+                      alt="cross-icon"
+                      class="cursor-pointer min-w-5 min-h-5"
                     />
                   </div>
                 </td>
@@ -71,10 +124,9 @@ const handleInputChange = (id: number, event: Event) => {
                   scope="row"
                   class="py-4 w-[40%] font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                <div class="w-[37vw] lg:w-[17vw] truncate">
-
-                  {{ item.value }}
-                </div>
+                  <div class="w-[37vw] lg:w-[17vw] truncate">
+                    {{ item.value }}
+                  </div>
                 </td>
                 <td class="py-4 w-[30%]">
                   <div
@@ -199,17 +251,19 @@ const handleInputChange = (id: number, event: Event) => {
       </div>
       <div class="flex items-center justify-between gap-3 p-2">
         <Button
+         :disabled="baseStore.selectedFoodArray.length == 0"
           variant="secondary"
           class="w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-900"
-          @click="baseStore.resetData()"
+          @click="handleKOT"
           >KOT</Button
         >
-        <Button class="w-full" @click="baseStore.resetData()">Save</Button>
-        <Button
+        <Button class="w-full" @click="handleTempSave" :disabled="baseStore.selectedTableData ? baseStore.selectedTableData.table.status != 1 : ''">Save</Button>
+        <!-- <Button
           class="w-full bg-green-700 hover:bg-green-800"
-          @click="baseStore.resetData()"
+          @click="handleSaveAndEbill"
           >Save & eBill</Button
-        >
+        > -->
+        <CustomerInfoModal />
       </div>
     </div>
   </div>
@@ -223,31 +277,31 @@ const handleInputChange = (id: number, event: Event) => {
 
 @media screen and (max-width: 767px) and (min-height: 600px) and (max-height: 801px) {
   .responsive-h-scroll-div {
-    height: 66vh;
+    height: 61vh;
   }
 }
 
 @media screen and (max-width: 767px) and (min-height: 802px) and (max-height: 911px) {
   .responsive-h-scroll-div {
-    height: 70vh;
+    height: 65vh;
   }
 }
 
 @media screen and (max-width: 767px) and (min-height: 912px) and (max-height: 934px) {
   .responsive-h-scroll-div {
-    height: 72vh;
+    height: 67vh;
   }
 }
 
 @media screen and (max-width: 820px) and (min-height: 935px) and (max-height: 1024px) {
   .responsive-h-scroll-div {
-    height: 73vh;
+    height: 68vh;
   }
 }
 
 @media screen and (max-width: 820px) and (min-height: 1025px) and (max-height: 1180px) {
   .responsive-h-scroll-div {
-    height: 75vh;
+    height: 70vh;
   }
 }
 </style>

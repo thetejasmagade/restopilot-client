@@ -63,11 +63,11 @@ const searchItems = () => {
 
 const addFoodItem = (item: FoodItem) => {
   baseStore.handleSelectedFood(item);
-}
+};
 
 const moveToBillSection = () => {
   baseStore.handleIsFoodItemsSectionOpen();
-}
+};
 </script>
 <template>
   <section>
@@ -92,31 +92,39 @@ const moveToBillSection = () => {
         </span>
       </div>
     </div>
-    <div v-if="foodItems.length != 0" class="flex flex-wrap justify-start gap-3 mt-4 overflow-y-auto max-h-[85.5vh] lg:max-h-[84vh]">
-        <div
-        v-for="(item, i) in foodItems" :key="i"
-          :class="[
-            item.food_type == 0
-              ? 'border-green-500'
-              : item.food_type == 1
-              ? 'border-red-500'
-              : 'border-yellow-500',
-          ]"
-          @click="addFoodItem(item)"
-          class="bg-gray-100 hover:bg-gray-200 dark:bg-[#18181B] dark:hover:bg-gray-800 p-2 rounded-md w-[47.5%] lg:w-[23.5%] h-24 border-l-[5px] cursor-pointer flex items-center relative select-none"
-        >
-          <img
-            v-if="item.is_most_selling"
-            src="@/assets/icons/base/star.svg"
-            alt="top-right-image"
-            class="absolute top-0 right-0 w-4 h-4 mr-2 mt-2"
-          />
-          {{ item?.value }}
-        </div>
+    <div
+      v-if="foodItems.length != 0"
+      class="flex flex-wrap justify-start gap-3 mt-4 overflow-y-auto max-h-[85.5vh] lg:max-h-[84vh]"
+    >
+      <div
+        v-for="(item, i) in foodItems"
+        :key="i"
+        :class="[
+          item.food_type == 0
+            ? 'border-green-500'
+            : item.food_type == 1
+            ? 'border-red-500'
+            : 'border-yellow-500',
+        ]"
+        @click="addFoodItem(item)"
+        class="bg-gray-100 hover:bg-gray-200 dark:bg-[#18181B] dark:hover:bg-gray-800 p-2 rounded-md w-[47.5%] lg:w-[23.5%] h-24 border-l-[5px] cursor-pointer flex items-center relative select-none"
+      >
+        <img
+          v-if="item.is_most_selling"
+          src="@/assets/icons/base/star.svg"
+          alt="top-right-image"
+          class="absolute top-0 right-0 w-4 h-4 mr-2 mt-2"
+        />
+        {{ item?.value }}
       </div>
+    </div>
     <div v-else class="flex items-center justify-center h-44">
       <h2 class="text-lg">No food items found....</h2>
     </div>
-    <Button class="absolute bottom-2 right-2 block lg:hidden" @click="moveToBillSection()">Next</Button>
+    <Button
+      class="absolute bottom-2 right-2 block lg:hidden"
+      @click="moveToBillSection()"
+      >Next</Button
+    >
   </section>
 </template>
