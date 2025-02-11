@@ -14,7 +14,7 @@ const is_authenticated = ref<boolean>(localStorage.getItem("is_authenticated") =
 
 const tablesData = ref();
 onMounted(async () => {
-  if(is_authenticated) await fetchTableData();
+  if(is_authenticated.value) await fetchTableData();
   baseStore.selectedTableDataHandler(null);
 });
 

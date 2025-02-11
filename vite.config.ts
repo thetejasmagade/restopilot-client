@@ -16,7 +16,7 @@ export default defineConfig({
         short_name: 'RestoPilot',
         description: 'A description of your app',
         theme_color: '#ff0000', // Set the theme color
-        background_color: '#ff0000', // Background color of the app
+        background_color: '#ffffff', // Background color of the app
         start_url: '/',
         display: 'standalone', // Fullscreen or standalone mode for PWA
         orientation: 'portrait', // Set screen orientation
