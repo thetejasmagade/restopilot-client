@@ -4,18 +4,17 @@ import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { useBaseStore } from "@/stores/useBaseStore";
+import { Button } from "@/components/ui/button";
 
 const { toast } = useToast();
 const baseStore = useBaseStore();
 const router = useRouter();
 
-const hello = ref(
-  JSON.parse(localStorage.getItem("data") || "null")?.items || []
-);
+const is_authenticated = ref<boolean>(localStorage.getItem("is_authenticated") === "true");
 
 const tablesData = ref();
 onMounted(async () => {
-  await fetchTableData();
+  if(is_authenticated) await fetchTableData();
   baseStore.selectedTableDataHandler(null);
 });
 
@@ -72,13 +71,19 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
   router.push("/manage");
   // baseStore.hello();
 };
+const clearLocalStorage = () => {
+  localStorage.clear();
+  baseStore.isAuthenticated = false;
+  window.location.reload();
+}
 </script>
 
 <template>
-  <h1>home</h1>
+  <h1>home {{ is_authenticated }}</h1>
   <RouterLink to="/manage"> manage </RouterLink>
   <RouterLink to="/login">login</RouterLink>
-  <section class="p-4">
+  <Button @click="clearLocalStorage">CLEAR LOCALSTORAGE</Button>
+  <section v-if="is_authenticated" class="p-4">
     <!-- Loop through each table group -->
     <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8">
       <h2 class="text-primary font-semibold mb-2">

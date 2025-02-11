@@ -58,10 +58,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useBaseStore } from "@/stores/useBaseStore";
 import { useToast } from "@/components/ui/toast/use-toast";
 
 const { toast } = useToast();
 const router = useRouter();
+const baseStore = useBaseStore();
 
 // Refs to bind to form fields
 const mobile = ref("");
@@ -96,7 +98,8 @@ const handleLogin = async () => {
         window.location.href = "/";
       }, 1000);
     } else {
-      localStorage.setItem("is_authenticated", false);
+      baseStore.isAuthenticated = false;
+      localStorage.clear();
       toast({
         title: "Uh oh! Something went wrong.",
         description: data.message,
