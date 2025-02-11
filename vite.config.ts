@@ -22,17 +22,17 @@ export default defineConfig({
         orientation: 'portrait', // Set screen orientation
         icons: [
           {
-            src: '/pwa-images/192x192.png', // Path to icon images
+            src: '/pwa-images/android/192x192.png', // Path to icon images
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/pwa-images/512x512.png', // Path to icon images
+            src: '/pwa-images/android/512x512.png', // Path to icon images
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: '/pwa-images/256x256.png', // Path to icon images
+            src: '/pwa-images/android/256x256.png', // Path to icon images
             sizes: '256x256',
             type: 'image/png',
           },
