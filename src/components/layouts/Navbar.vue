@@ -73,18 +73,18 @@ const newOrderHandler = () => {
           class="cursor-pointer"
         />
       </RouterLink>
-      <!-- <RouterLink to="/settings" class="text-primary">
+      <RouterLink to="/settings" class="text-primary">
         <img
           src="@/assets/icons/base/settings.svg"
           alt="color-mode-sun"
           class="cursor-pointer"
         />
-      </RouterLink> -->
+      </RouterLink>
       <img
         @click="toggleTheme()"
         src="@/assets/icons/base/sun.svg"
         alt="color-mode-sun"
-        class="cursor-pointer"
+        class="cursor-pointer hidden md:block"
       />
     </div>
   </nav>
