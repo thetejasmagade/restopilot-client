@@ -12,11 +12,11 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate', // Automatically update the service worker when new version is available
       manifest: {
-        name: 'Your App Name',
-        short_name: 'App Name',
+        name: 'RestoPilot',
+        short_name: 'RestoPilot',
         description: 'A description of your app',
-        theme_color: '#ffffff', // Set the theme color
-        background_color: '#ffffff', // Background color of the app
+        theme_color: '#ff0000', // Set the theme color
+        background_color: '#ff0000', // Background color of the app
         start_url: '/',
         display: 'standalone', // Fullscreen or standalone mode for PWA
         orientation: 'portrait', // Set screen orientation
