@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { useRouter } from "vue-router";
 import { useBaseStore } from "@/stores/useBaseStore";
 import { Button } from "@/components/ui/button";
+import DatePicker from "@/components/ui/DatePicker.vue";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +34,7 @@ const handleSaveAndEbill = async () => {
     customer_info: {
       name: baseStore.customerInfo.name,
       mobile_no: baseStore.customerInfo.mobile_no,
-      dob: baseStore.customerInfo.dob,
+      dob: baseStore.customerInfo.dob ? format(new Date(baseStore.customerInfo.dob), 'yyyy-MM-dd') : '',
     },
   };
   let response = await fetch(url, {
@@ -57,6 +59,10 @@ const clearCustomerInfo = () => {
     dob: "",
   };
 };
+
+const handleApply = (val: any) => {
+  console.log(val);
+};
 </script>
 
 <template>
@@ -68,7 +74,7 @@ const clearCustomerInfo = () => {
         >Save & eBill</Button
       >
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px] font-inter">
+    <DialogContent class="max-w-[90vw] md:max-w-[425px] font-inter rounded-lg">
       <DialogHeader>
         <DialogTitle>Save & eBill</DialogTitle>
         <DialogDescription> Does your Payment Received? </DialogDescription>
@@ -95,12 +101,7 @@ const clearCustomerInfo = () => {
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="dob" class="text-left">DOB.</Label>
-          <Input
-            v-model="baseStore.customerInfo.dob"
-            type="date"
-            id="dob"
-            class="col-span-3 focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 bg-gray-100 dark:bg-[#18181B]"
-          />
+          <DatePicker v-model="baseStore.customerInfo.dob" />
         </div>
       </div>
 

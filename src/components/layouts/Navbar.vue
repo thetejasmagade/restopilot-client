@@ -45,7 +45,7 @@ const newOrderHandler = () => {
         >
           <img src="@/assets/icons/base/soup.svg" alt="logo" class="h-6 w-6" />
         </div>
-        <div class="grid flex-1 text-left text-sm leading-tight">
+        <div class="grid flex-1 text-left text-sm leading-tight sm:w-auto" :class="route.path != '/' ? 'w-[100px]' : 'w-auto'">
           <span class="truncate font-semibold">Restaurant Name</span
           ><span class="truncate text-xs">Chinese Restaurant</span>
         </div>
@@ -62,7 +62,7 @@ const newOrderHandler = () => {
           class="w-4 h-4 m-0"
           alt="plus-icon"
         />
-        Create New Order
+        <span class="hidden lg:block">Create</span> New Order
       </Button>
     </div>
     <div class="md:flex items-center justify-end gap-2" :class="baseStore.getIsFoodItemsSectionOpen && route.path == '/manage' ? 'hidden' : 'flex'">

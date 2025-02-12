@@ -48,7 +48,6 @@ const handleApply = () => {
     startDate: date.value[0],
     endDate: date.value[1]
   }
-  console.log(temp);
   
   emits('applyDate', temp)
 }
@@ -75,7 +74,7 @@ const handleApply = () => {
   font-family: Inter;
 }
 
-.dp__range_start, .dp__range_end, .dp__action_select, .dp__overlay_cell_active  {
+.dp__range_start, .dp__range_end, .dp__action_select, .dp__overlay_cell_active, .dp__active_date  {
   background:red !important;
 }
 
