@@ -13,7 +13,7 @@ import { useBaseStore } from "@/stores/useBaseStore";
 import VueDatePicker from '@vuepic/vue-datepicker';
 
 const baseStore = useBaseStore();
-const date = defineModel<Date>();
+const date = defineModel<any>();
 const isOpen = ref(false);
 
 watch(date, () => {
