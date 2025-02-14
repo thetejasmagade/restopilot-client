@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 const baseStore = useBaseStore();
 const selectedSetting = ref(0);
 
+interface Item {
+  id: number;
+  title: string;
+}
+
 const sidebarNavItems: Item[] = [
   {
     id: 0,
