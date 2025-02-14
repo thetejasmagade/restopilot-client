@@ -28,7 +28,18 @@ const logOut = () => {
   localStorage.clear();
   baseStore.isAuthenticated = false;
   window.location.reload();
-}
+};
+
+const toggleTheme = (val: "light" | "dark") => {
+  if (val == "light") {
+    document.body.classList.remove("dark");
+  } else {
+    document.body.classList.add("dark");
+  }
+  localStorage.setItem("theme", val);
+  const theme = localStorage.getItem("theme")
+  if(theme) baseStore.handleDarkMode(theme);
+};
 </script>
 
 <template>
@@ -67,10 +78,10 @@ const logOut = () => {
       </aside>
       <div class="flex-1 lg:max-w-2xl">
         <div class="space-y-6">
-            <div v-if="selectedSetting == 0">
+          <div v-if="selectedSetting == 0">
             <h3 class="text-xl font-medium">Account</h3>
             <p class="text-md text-muted-foreground">
-                Update your account settings. Set your preferred settings.
+              Update your account settings. Set your preferred settings.
             </p>
             <Separator class="my-2" />
             <div>
@@ -95,6 +106,7 @@ const logOut = () => {
               </p>
               <div class="flex items-center justify-start gap-2 mt-2">
                 <div
+                  @click="toggleTheme('light')"
                   class="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground cursor-pointer"
                 >
                   <div class="space-y-2 rounded-sm bg-[#ecedef] p-2">
@@ -117,6 +129,7 @@ const logOut = () => {
                   </div>
                 </div>
                 <div
+                  @click="toggleTheme('dark')"
                   class="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground cursor-pointer"
                 >
                   <div class="space-y-2 rounded-sm bg-slate-950 p-2">

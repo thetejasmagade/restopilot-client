@@ -61,8 +61,8 @@ export const useBaseStore = defineStore('base', {
     handleSidebar() {
       this.sidebarOpen = !this.isSidebarOpen;
     },
-    handleDarkMode() {
-      this.darkMode = !this.darkMode;
+    handleDarkMode(val: string) {
+      this.darkMode = val === 'dark';
     },
     handleSelectedFilter(filter: Filter) {
       this.selectedFilter = filter;

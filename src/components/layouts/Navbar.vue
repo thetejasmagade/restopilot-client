@@ -9,8 +9,12 @@ const baseStore = useBaseStore();
 
 const toggleTheme = () => {
   document.body.classList.toggle("dark");
-  baseStore.handleDarkMode();
-}
+  if (localStorage.getItem("theme") == "light")
+    localStorage.setItem("theme", "dark");
+  else localStorage.setItem("theme", "light");
+  const theme = localStorage.getItem("theme")
+  if(theme) baseStore.handleDarkMode(theme);
+};
 
 const newOrderHandler = () => {
   baseStore.selectedTableDataHandler(null);
@@ -39,18 +43,25 @@ const newOrderHandler = () => {
         />
       </div> -->
       <RouterLink to="/">
-      <div class="logo flex items-center justify-start gap-2 mr-6">
-        <div
-          class="w-10 h-10 rounded-md bg-primary flex items-center justify-center"
-        >
-          <img src="@/assets/icons/base/soup.svg" alt="logo" class="h-6 w-6" />
+        <div class="logo flex items-center justify-start gap-2 mr-6">
+          <div
+            class="w-10 h-10 rounded-md bg-primary flex items-center justify-center"
+          >
+            <img
+              src="@/assets/icons/base/soup.svg"
+              alt="logo"
+              class="h-6 w-6"
+            />
+          </div>
+          <div
+            class="grid flex-1 text-left text-sm leading-tight sm:w-auto"
+            :class="route.path != '/' ? 'w-[100px]' : 'w-auto'"
+          >
+            <span class="truncate font-semibold">Restaurant Name</span
+            ><span class="truncate text-xs">Chinese Restaurant</span>
+          </div>
         </div>
-        <div class="grid flex-1 text-left text-sm leading-tight sm:w-auto" :class="route.path != '/' ? 'w-[100px]' : 'w-auto'">
-          <span class="truncate font-semibold">Restaurant Name</span
-          ><span class="truncate text-xs">Chinese Restaurant</span>
-        </div>
-      </div>
-    </RouterLink>
+      </RouterLink>
       <Button
         @click="newOrderHandler()"
         v-if="route.path != '/'"
@@ -65,7 +76,14 @@ const newOrderHandler = () => {
         <span class="hidden lg:block">Create</span> New Order
       </Button>
     </div>
-    <div class="md:flex items-center justify-end gap-2" :class="baseStore.getIsFoodItemsSectionOpen && route.path == '/manage' ? 'hidden' : 'flex'">
+    <div
+      class="md:flex items-center justify-end gap-2"
+      :class="
+        baseStore.getIsFoodItemsSectionOpen && route.path == '/manage'
+          ? 'hidden'
+          : 'flex'
+      "
+    >
       <RouterLink to="/orders" class="text-primary">
         <img
           src="@/assets/icons/base/pages.svg"
