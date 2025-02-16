@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { format } from 'date-fns';
 import { useRouter } from "vue-router";
 import { useBaseStore } from "@/stores/useBaseStore";
@@ -18,8 +19,10 @@ import { Label } from "@/components/ui/label";
 
 const baseStore = useBaseStore();
 const router = useRouter();
+const isLoading = ref(false);
 
 const handleSaveAndEbill = async () => {
+  isLoading.value = true;
   const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/save-ebill`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
@@ -44,6 +47,7 @@ const handleSaveAndEbill = async () => {
     },
     body: JSON.stringify(tableData), // Convert the data to a JSON string
   });
+  isLoading.value = false;
   if (response.status != 200) {
     alert("Issue in updating data");
   } else {
@@ -71,8 +75,7 @@ const handleApply = (val: any) => {
       <Button
         :disabled="baseStore.selectedFoodArray.length == 0"
         class="w-full bg-green-700 hover:bg-green-800"
-        >Save & eBill</Button
-      >
+        >Save & eBill</Button>
     </DialogTrigger>
     <DialogContent class="max-w-[90vw] md:max-w-[425px] font-inter rounded-lg">
       <DialogHeader>
@@ -107,7 +110,11 @@ const handleApply = (val: any) => {
 
       <DialogFooter>
         <Button type="submit" @click="handleSaveAndEbill">
-          Save this Bill
+          <div
+          v-if="isLoading"
+            class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span v-else>Save this Bill</span>
         </Button>
       </DialogFooter>
     </DialogContent>

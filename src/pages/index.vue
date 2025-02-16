@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { useBaseStore } from "@/stores/useBaseStore";
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useBaseStore } from "@/stores/useBaseStore";
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
@@ -8,6 +9,11 @@ import CustomerInfoModal from "@/components/manage/billing/CustomerInfoModal.vue
 import { router } from "@/router";
 
 const baseStore = useBaseStore();
+
+const loading = ref({
+  kot: false,
+  save: false,
+})
 
 // List of dynamic payment methods
 const paymentMethods = [
@@ -35,6 +41,7 @@ const handleInputChange = (id: number, event: Event) => {
 };
 
 const handleKOT = async () => {
+  loading.value.kot = true;
   const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-kot`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
@@ -52,15 +59,17 @@ const handleKOT = async () => {
     },
     body: JSON.stringify(tableData), // Convert the data to a JSON string
   });
+  loading.value.kot = false;
   if (response.status != 200) {
-    alert('Issue in updating record')
+    alert("Something went wrong...");
   } else {
     baseStore.resetData();
-    router.push('/');
+    router.push("/");
   }
 };
 
 const handleTempSave = async () => {
+  loading.value.save = true;
   const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/temp-save`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
@@ -75,15 +84,14 @@ const handleTempSave = async () => {
     },
     body: JSON.stringify(tableData), // Convert the data to a JSON string
   });
+  loading.value.save = true;
   if (response.status != 200) {
-    alert('Issue in updating record')
+    alert("Issue in updating record");
   } else {
     baseStore.resetData();
-    router.push('/');
+    router.push("/");
   }
 };
-
-
 </script>
 
 <template>
@@ -251,13 +259,31 @@ const handleTempSave = async () => {
       </div>
       <div class="flex items-center justify-between gap-3 p-2">
         <Button
-         :disabled="baseStore.selectedFoodArray.length == 0"
+          :disabled="baseStore.selectedFoodArray.length == 0"
           variant="secondary"
           class="w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-900"
           @click="handleKOT"
-          >KOT</Button
         >
-        <Button class="w-full" @click="handleTempSave" :disabled="baseStore.selectedTableData ? baseStore.selectedTableData.table.status != 1 : ''">Save</Button>
+          <div
+          v-if="loading.kot"
+            class="w-3 h-3 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span v-else>KOT</span>
+        </Button>
+        <Button
+          class="w-full"
+          @click="handleTempSave"
+          :disabled="
+            baseStore.selectedTableData
+              ? baseStore.selectedTableData.table.status != 1
+              : ''
+          "
+          ><div
+          v-if="loading.save"
+            class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span v-else>Save</span></Button
+        >
         <!-- <Button
           class="w-full bg-green-700 hover:bg-green-800"
           @click="handleSaveAndEbill"
