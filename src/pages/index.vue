@@ -95,19 +95,19 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
 </script>
 
 <template>
-  <section v-if="is_authenticated" class="p-4 overflow-y-auto h-[93vh]">
-    <div class="mb-3 block md:flex items-center justify-between">
+  <section v-if="is_authenticated" class="overflow-y-auto h-[93vh]">
+    <div class="p-4 block md:flex items-center justify-between">
       <h3 class="text-xl font-semibold">Manage Tables</h3>
-      <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-4 md:mb-0">
+      <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0">
         <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
             <div :class="info.classes" class="w-6 h-6 rounded-full border-2 border-dashed" />
             <div>{{ info.name }}</div>
         </div>
       </div>
     </div>
-    <Separator class="my-3" />
+    <Separator class="mb-3" />
     <!-- Loop through each table group -->
-    <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8">
+    <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8 px-4">
       <h2 class="text-primary font-semibold mb-2">
         {{ tableData.area_name }}
       </h2>
