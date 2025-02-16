@@ -1,20 +1,39 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { useBaseStore } from "@/stores/useBaseStore";
-import { Button } from "@/components/ui/button";
 
 const { toast } = useToast();
 const baseStore = useBaseStore();
 const router = useRouter();
 
-const is_authenticated = ref<boolean>(localStorage.getItem("is_authenticated") === "true");
+const is_authenticated = ref<boolean>(
+  localStorage.getItem("is_authenticated") === "true"
+);
+
+const tablesInfo = [
+  {
+    name: "Open",
+    classes:
+      "bg-gray-200 hover:bg-gray-300 dark:bg-gray-900 dark:hover:bg-gray-950 border-gray-400",
+  },
+  {
+    name: "Running",
+    classes:
+      "bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400",
+  },
+  {
+    name: "Done",
+    classes:
+      "bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400",
+  },
+];
 
 const tablesData = ref();
 onMounted(async () => {
-  if(is_authenticated.value) await fetchTableData();
+  if (is_authenticated.value) await fetchTableData();
   baseStore.selectedTableDataHandler(null);
 });
 
@@ -58,9 +77,10 @@ interface SelectedTableData {
 
 const tableClickHandler = (tableData: SelectedTableData, id: number) => {
   console.log(tableData.tables[id].items);
-  if (tableData.tables[id].items.length > 0)  baseStore.isFoodItemsSectionOpen = false; 
+  if (tableData.tables[id].items.length > 0)
+    baseStore.isFoodItemsSectionOpen = false;
   else baseStore.isFoodItemsSectionOpen = true;
-  
+
   const data = {
     id: tableData.id,
     area_name: tableData.area_name,
@@ -71,19 +91,20 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
   router.push("/manage");
   // baseStore.hello();
 };
-const clearLocalStorage = () => {
-  localStorage.clear();
-  baseStore.isAuthenticated = false;
-  window.location.reload();
-}
 </script>
 
 <template>
-  <h1>home {{ is_authenticated }}</h1>
-  <RouterLink to="/manage"> manage </RouterLink>
-  <RouterLink to="/login">login</RouterLink>
-  <Button @click="clearLocalStorage">CLEAR LOCALSTORAGE</Button>
-  <section v-if="is_authenticated" class="p-4">
+  <section v-if="is_authenticated" class="p-4 overflow-y-auto h-[93vh]">
+    <div class="mb-3 block md:flex items-center justify-between">
+      <h3 class="text-xl font-semibold">Manage Tables</h3>
+      <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-4 md:mb-0">
+        <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
+            <div :class="info.classes" class="w-6 h-6 rounded-full border-2 border-dashed" />
+            <div>{{ info.name }}</div>
+        </div>
+      </div>
+    </div>
+    <Separator class="my-3" />
     <!-- Loop through each table group -->
     <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8">
       <h2 class="text-primary font-semibold mb-2">

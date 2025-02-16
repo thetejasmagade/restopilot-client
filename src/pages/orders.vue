@@ -8,7 +8,7 @@ const router = useRouter();
 </script>
 
 <template>
-  <section>
+  <section class="overflow-y-auto h-[93vh]">
     <OrdersTable />
   </section>
 </template>

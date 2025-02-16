@@ -2,11 +2,10 @@
 import { ref, watch } from "vue";
 import { Input } from "@/components/ui/input";
 import DateRangePicker from "@/components/ui/DateRangePicker.vue";
-import { format } from "date-fns";
 
 // Define searchTerm and dateRange state
 const searchTerm = ref("");
-const dateRange = ref({ startDate: format(new Date(new Date().setDate(new Date().getDate() - 7)), 'dd/MM/yyyy'), endDate: format(new Date(), 'dd/MM/yyyy') });
+const dateRange = ref({ startDate: new Date(new Date().setDate(new Date().getDate() - 7)), endDate: new Date() });
 
 // Emit filter-update event
 const emit = defineEmits(["filter-update"]);
@@ -16,8 +15,8 @@ watch([searchTerm], () => {
   if (searchTerm.value.length == 0 || searchTerm.value.length > 3) {
     emit("filter-update", {
       search: searchTerm.value.trim(),
-      startDate: dateRange.value.startDate,
-      endDate: dateRange.value.endDate,
+      startDate: new Date(dateRange.value.startDate),
+      endDate: new Date(dateRange.value.endDate),
     });
   }
 });
@@ -30,8 +29,8 @@ const handleApply = (newDateRange) => {
   // Emit any additional updates if necessary
   emit("filter-update", {
     search: searchTerm.value.trim(),
-    startDate: newDateRange.startDate,
-    endDate: newDateRange.endDate,
+    startDate: new Date(newDateRange.startDate),
+    endDate: new Date(newDateRange.endDate),
   });
 };
 </script>
