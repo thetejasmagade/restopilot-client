@@ -36,7 +36,7 @@ const handleApply = (newDateRange) => {
 </script>
 
 <template>
-  <div class="block md:flex items-center justify-end gap-3">
+  <div class="block md:flex items-center justify-end gap-2">
     <!-- DateRangePicker with the apply event listener -->
     <DateRangePicker @applyDate="(val) => handleApply(val)" />
 

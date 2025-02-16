@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 import Filters from "@/components/orders/Filters.vue";
 import {
   Popover,
@@ -24,6 +25,7 @@ const totalItems = ref(0);
 const itemsPerPage = ref(20);
 const currentPage = ref(1);
 const isLoading = ref(false);
+const refreshing = ref(false);
 
 const filters = ref({
   search: "",
@@ -36,7 +38,8 @@ const totalPages = computed(() =>
 );
 
 // Fetch data from backend API
-const fetchData = async () => {
+const fetchData = async (isFromRefresh: any) => {
+  if(isFromRefresh == true) refreshing.value = true;
   isLoading.value = true;
   try {
     const body = {
@@ -74,6 +77,7 @@ const fetchData = async () => {
     totalItems.value = 0;
   } finally {
     isLoading.value = false;
+    if(isFromRefresh == true) refreshing.value = false;
   }
 };
 
@@ -106,8 +110,20 @@ const badgeTypeClasses = (badgeType: any) => {
 <template>
   <div class="p-4">
     <div class="block md:flex items-center justify-between mb-4">
-      <h1 class="text-xl font-semibold mb-2 md:mb-0">Orders Data</h1>
-      <Filters @filter-update="updateFilters" />
+      <div class="flex md:block items-center justify-between mb-3 md:mb-0">
+        <h1 class="text-xl font-semibold">Orders Data</h1>
+        <Button class="flex md:hidden" @click="fetchData(true)">
+          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          Refresh
+        </Button>
+      </div>
+      <div class="block md:flex items-center justify-start gap-2">
+        <Button class="hidden md:flex" @click="fetchData(true)">
+          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          Refresh
+        </Button>
+        <Filters @filter-update="updateFilters" />
+      </div>
     </div>
 
     <!-- Data Table -->
@@ -250,14 +266,14 @@ const badgeTypeClasses = (badgeType: any) => {
       </table>
     </div>
 
-    <trdiv v-if="isLoading">
+    <div v-if="isLoading">
       <div class="text-center py-8">
         <div
           class="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"
         ></div>
         <p class="mt-2 text-gray-500 dark:text-gray-300">Loading...</p>
       </div>
-    </trdiv>
+    </div>
 
     <div v-if="!isLoading && !data.length" class="flex justify-center mt-4">
       <div>

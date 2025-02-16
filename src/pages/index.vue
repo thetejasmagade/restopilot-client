@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { useBaseStore } from "@/stores/useBaseStore";
@@ -32,13 +33,15 @@ const tablesInfo = [
   },
 ];
 
+const refreshing = ref(false);
 const tablesData = ref();
 onMounted(async () => {
-  if (is_authenticated.value) await fetchTableData();
+  if (is_authenticated.value) await fetchTablesData(false);
   baseStore.selectedTableDataHandler(null);
 });
 
-const fetchTableData = async () => {
+const fetchTablesData = async (isFromRefresh: any) => {
+  if(isFromRefresh == true) refreshing.value = true;
   const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/get-tables-data`;
   const userData = {
     mobile: Number(localStorage.getItem("mobile_no")),
@@ -66,6 +69,8 @@ const fetchTableData = async () => {
     }
   } catch (error) {
     console.error("Error:", error);
+  } finally {
+    if(isFromRefresh == true) refreshing.value = false;
   }
 };
 
@@ -98,11 +103,26 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
   <section v-if="is_authenticated" class="overflow-y-auto h-[93vh]">
     <div class="p-4 block md:flex items-center justify-between">
       <h3 class="text-xl font-semibold">Manage Tables</h3>
-      <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0">
-        <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
-            <div :class="info.classes" class="w-6 h-6 rounded-full border-2 border-dashed" />
+      <div class="flex items-center justify-between md:justify-start gap-2">
+        <div
+          class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0"
+        >
+          <div
+            v-for="(info, i) in tablesInfo"
+            :key="i"
+            class="flex items-center justify-start gap-2"
+          >
+            <div
+              :class="info.classes"
+              class="w-6 h-6 rounded-full border-2 border-dashed"
+            />
             <div>{{ info.name }}</div>
+          </div>
         </div>
+        <Button @click="fetchTablesData(true)">
+          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          <span class="hidden md:block">Refresh</span>
+        </Button>
       </div>
     </div>
     <Separator class="mb-3" />
