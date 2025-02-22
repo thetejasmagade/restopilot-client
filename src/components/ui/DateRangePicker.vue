@@ -11,6 +11,7 @@
       :format="formatDate"
       @update:model-value="handleApply"
       :dark="baseStore.isDarkMode"
+      :month-change-on-scroll="false"
     />
   </div>
 </template>

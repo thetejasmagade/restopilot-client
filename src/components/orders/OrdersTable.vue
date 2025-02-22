@@ -3,6 +3,7 @@ import { ref, watch, computed } from "vue";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Filters from "@/components/orders/Filters.vue";
+import Widgets from "./Widgets.vue";
 import {
   Popover,
   PopoverContent,
@@ -14,13 +15,14 @@ const columns = [
   "Table Name",
   "Order Type",
   "Payment",
-  "Amount",
   "Date",
+  "Amount",
   "Total Items",
   "Customer Info",
 ];
 const data = ref<any>([]);
 const totalItems = ref(0);
+const totalAmt = ref(0);
 
 const itemsPerPage = ref(20);
 const currentPage = ref(1);
@@ -39,12 +41,15 @@ const totalPages = computed(() =>
 
 // Fetch data from backend API
 const fetchData = async (isFromRefresh: any) => {
-  if(isFromRefresh == true) refreshing.value = true;
+  data.value = [];
+  totalItems.value = 0;
+  totalAmt.value = 0;
+  if (isFromRefresh == true) refreshing.value = true;
   isLoading.value = true;
   try {
     const body = {
       mobile: Number(localStorage.getItem("mobile_no")),
-      search: filters.value.search || null,
+      search: filters.value.search || "",
       startDate: filters.value.startDate
         ? new Date(filters.value.startDate).toISOString().split("T")[0]
         : null,
@@ -71,13 +76,16 @@ const fetchData = async (isFromRefresh: any) => {
     const result = await response.json();
     data.value = result.orders || [];
     totalItems.value = result.totalItems || 0; // Assuming the total count is returned as `totalItems`
+    totalAmt.value = result.totalAmt || 0;
   } catch (error) {
     console.error("Error fetching data:", error);
     data.value = [];
     totalItems.value = 0;
+    totalAmt.value = 0;
   } finally {
     isLoading.value = false;
-    if(isFromRefresh == true) refreshing.value = false;
+    if (isFromRefresh == true)
+      setTimeout(() => (refreshing.value = false), 500);
   }
 };
 
@@ -109,17 +117,30 @@ const badgeTypeClasses = (badgeType: any) => {
 
 <template>
   <div class="p-4">
+    <Widgets :totalAmt="totalAmt" :totalOrders="totalItems" />
     <div class="block md:flex items-center justify-between mb-4">
       <div class="flex md:block items-center justify-between mb-3 md:mb-0">
         <h1 class="text-xl font-semibold">Orders Data</h1>
         <Button class="flex md:hidden" @click="fetchData(true)">
-          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          <img
+            src="@/assets/icons/base/refresh.svg"
+            class="h-4 w-4"
+            :class="
+              refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''
+            "
+          />
           Refresh
         </Button>
       </div>
       <div class="block md:flex items-center justify-start gap-2">
         <Button class="hidden md:flex" @click="fetchData(true)">
-          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          <img
+            src="@/assets/icons/base/refresh.svg"
+            class="h-4 w-4"
+            :class="
+              refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''
+            "
+          />
           Refresh
         </Button>
         <Filters @filter-update="updateFilters" />
@@ -128,7 +149,7 @@ const badgeTypeClasses = (badgeType: any) => {
 
     <!-- Data Table -->
     <div
-      class="overflow-x-auto overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 max-h-[calc(100vh-280px)] xl:max-h-[calc(100vh-200px)]"
+      class="overflow-x-auto overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 max-h-[calc(100vh-358px)] xl:max-h-[calc(100vh-252px)]"
     >
       <table
         class="order-table min-w-full bg-white dark:bg-[#18181B] table-fixed"
@@ -189,13 +210,13 @@ const badgeTypeClasses = (badgeType: any) => {
                 {{ row.payment_type }}
               </span>
             </td>
+            <td class="px-3 py-2 dark:text-gray-200 whitespace-nowrap">
+              {{ format(row.created_at, "dd MMMM, yyyy") }}
+            </td>
             <td
               class="px-3 py-2 text-green-500 dark:text-green-300 whitespace-nowrap"
             >
               {{ "₹" + row.total_amt + ".00" }}
-            </td>
-            <td class="px-3 py-2 dark:text-gray-200 whitespace-nowrap">
-              {{ format(row.created_at, "dd MMMM, yyyy") }}
             </td>
             <td class="px-3 py-2 dark:text-gray-200 whitespace-nowrap">
               <Popover>

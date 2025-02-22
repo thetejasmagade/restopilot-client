@@ -70,7 +70,7 @@ const fetchTablesData = async (isFromRefresh: any) => {
   } catch (error) {
     console.error("Error:", error);
   } finally {
-    if(isFromRefresh == true) refreshing.value = false;
+    if(isFromRefresh == true) setTimeout(() => refreshing.value = false, 500);
   }
 };
 
@@ -120,7 +120,7 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
           </div>
         </div>
         <Button @click="fetchTablesData(true)">
-          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-spin' : ''" />
+          <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''" />
           <span class="hidden md:block">Refresh</span>
         </Button>
       </div>
