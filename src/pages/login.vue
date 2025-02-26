@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -6,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBaseStore } from "@/stores/useBaseStore";
 import { useToast } from "@/components/ui/toast/use-toast";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const { toast } = useToast();
 const router = useRouter();
 const baseStore = useBaseStore();
 
 // Refs to bind to form fields
+const userType = ref("billing");
 const mobile = ref("");
 const password = ref("");
 const isLoading = ref(false); // Loading state
@@ -21,6 +22,7 @@ const handleLogin = async () => {
   isLoading.value = true; // Start loading
   const url = `${import.meta.env.VITE_SERVER_BASE_URL}users`;
   const userData = {
+    user_type: userType.value,
     mobile: mobile.value,
     password: password.value,
   };
@@ -39,6 +41,7 @@ const handleLogin = async () => {
     if (response.ok) {
       localStorage.setItem("is_authenticated", "true"); // Store as string
       localStorage.setItem("mobile_no", data.mobile);
+      localStorage.setItem("userType", userType.value);
       localStorage.setItem("data", JSON.stringify(data));
       setTimeout(() => {
         window.location.href = "/";
@@ -69,6 +72,17 @@ const handleLogin = async () => {
         Login
       </h2>
 
+      <Tabs
+        v-model:model-value="userType"
+        default-value="billing"
+        class="w-full my-3"
+      >
+        <TabsList class="grid w-full grid-cols-2 dark:bg-[#F4F4F5]">
+          <TabsTrigger value="billing"> Billing </TabsTrigger>
+          <TabsTrigger value="kitchen"> Kitchen </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <!-- Form -->
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
@@ -83,7 +97,7 @@ const handleLogin = async () => {
             id="mobile"
             v-model="mobile"
             placeholder="Enter your Mobile"
-            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500"
+            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500 text-black"
             required
           />
         </div>
@@ -100,14 +114,19 @@ const handleLogin = async () => {
             id="password"
             v-model="password"
             placeholder="Enter your password"
-            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500"
+            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500 text-black"
             required
           />
         </div>
 
         <!-- Submit Button with Loading State -->
         <div>
-          <Button type="submit" size="lg" class="w-full focus:outline-none" :disabled="isLoading">
+          <Button
+            type="submit"
+            size="lg"
+            class="w-full focus:outline-none"
+            :disabled="isLoading"
+          >
             <span v-if="isLoading" class="flex items-center justify-center">
               <svg
                 class="animate-spin h-5 w-5 mr-2 text-white"

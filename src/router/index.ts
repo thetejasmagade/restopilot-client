@@ -12,7 +12,7 @@ const routes = [
     component: ManagePage, 
     name: 'ManagePage',
     beforeEnter: (to: any, from: any, next: any) => {
-      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false');
+      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false') && localStorage.getItem('userType') == 'billing';
       isAuthenticated ? next() : next({ path: '/login' })
     }
   },
@@ -21,7 +21,7 @@ const routes = [
     component: OrdersPage, 
     name: 'OrdersPage',
     beforeEnter: (to: any, from: any, next: any) => {
-      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false');
+      const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated') || 'false') && localStorage.getItem('userType') == 'billing';
       isAuthenticated ? next() : next({ path: '/login' })
     }
   },

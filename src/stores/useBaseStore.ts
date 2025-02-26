@@ -42,7 +42,10 @@ export const useBaseStore = defineStore('base', {
     isAuthenticated: false,
     sidebarOpen: true,
     darkMode: false,
-    selectedFilter: (JSON.parse(localStorage.getItem("data") || "null")?.filters[0]) || [],
+    selectedFilter: (() => {
+      const data = JSON.parse(localStorage.getItem("data") || "null");
+      return Array.isArray(data?.filters) && data.filters.length > 0 ? data.filters[0] : [];
+    })(),    
     selectedFoodArray: [] as Food[],
     paymentType: 'cash' as 'cash' | 'card' | 'upi',
     totalAmt: 0,

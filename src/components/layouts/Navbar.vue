@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useBaseStore } from "@/stores/useBaseStore";
 import Button from "@/components/ui/button/Button.vue";
@@ -6,14 +7,18 @@ import Button from "@/components/ui/button/Button.vue";
 const route = useRoute();
 const router = useRouter();
 const baseStore = useBaseStore();
+const userType = ref<string>(localStorage.getItem("userType") || "");
+const restaurantInfo = ref<{ name: string; description: string }>(
+  JSON.parse(localStorage.getItem("data") || "null").restaurant_info || []
+);
 
 const toggleTheme = () => {
   document.body.classList.toggle("dark");
   if (localStorage.getItem("theme") == "light")
     localStorage.setItem("theme", "dark");
   else localStorage.setItem("theme", "light");
-  const theme = localStorage.getItem("theme")
-  if(theme) baseStore.handleDarkMode(theme);
+  const theme = localStorage.getItem("theme");
+  if (theme) baseStore.handleDarkMode(theme);
 };
 
 const newOrderHandler = () => {
@@ -57,8 +62,10 @@ const newOrderHandler = () => {
             class="grid flex-1 text-left text-sm leading-tight sm:w-auto"
             :class="route.path != '/' ? 'w-[100px]' : 'w-auto'"
           >
-            <span class="truncate font-semibold">Restaurant Name</span
-            ><span class="truncate text-xs">Chinese Restaurant</span>
+            <span class="truncate font-semibold">{{ restaurantInfo.name }}</span
+            ><span class="truncate text-xs">{{
+              restaurantInfo.description
+            }}</span>
           </div>
         </div>
       </RouterLink>
@@ -84,7 +91,11 @@ const newOrderHandler = () => {
           : 'flex'
       "
     >
-      <RouterLink to="/orders" class="text-primary">
+      <RouterLink
+        v-if="userType == 'billing'"
+        to="/orders"
+        class="text-primary"
+      >
         <img
           src="@/assets/icons/base/pages.svg"
           alt="color-mode-sun"
@@ -102,7 +113,8 @@ const newOrderHandler = () => {
         @click="toggleTheme()"
         src="@/assets/icons/base/sun.svg"
         alt="color-mode-sun"
-        class="cursor-pointer hidden md:block"
+        class="cursor-pointer"
+        :class="userType == 'billing' ? 'hidden md:block' : 'block'"
       />
     </div>
   </nav>
