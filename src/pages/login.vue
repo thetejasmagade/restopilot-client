@@ -83,7 +83,7 @@ const handleLogin = async () => {
             id="mobile"
             v-model="mobile"
             placeholder="Enter your Mobile"
-            class="w-full focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2"
+            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500"
             required
           />
         </div>
@@ -100,7 +100,7 @@ const handleLogin = async () => {
             id="password"
             v-model="password"
             placeholder="Enter your password"
-            class="w-full focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2"
+            class="w-full dark:bg-transparent focus:!ring-0 focus-visible:!ring-offset-0 focus:border-red-500 focus:border-2 dark:border-gray-300 focus:dark:border-red-500"
             required
           />
         </div>
