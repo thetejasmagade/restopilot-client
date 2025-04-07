@@ -51,10 +51,10 @@ const fetchData = async (isFromRefresh: any) => {
       mobile: Number(localStorage.getItem("mobile_no")),
       search: filters.value.search || "",
       startDate: filters.value.startDate
-        ? new Date(filters.value.startDate).toISOString().split("T")[0]
+        ? new Date(filters.value.startDate).toLocaleDateString()
         : null,
       endDate: filters.value.endDate
-        ? new Date(filters.value.endDate).toISOString().split("T")[0]
+        ? new Date(filters.value.endDate).toLocaleDateString()
         : null,
       limit: itemsPerPage.value,
       offset: (currentPage.value - 1) * itemsPerPage.value,
@@ -94,6 +94,7 @@ watch([filters, currentPage], fetchData, { immediate: true });
 
 // Handle filter updates from Filters.vue
 const updateFilters = (newFilters: any) => {
+  console.log(filters);
   filters.value = newFilters;
 };
 
