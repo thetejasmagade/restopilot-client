@@ -94,7 +94,6 @@ watch([filters, currentPage], fetchData, { immediate: true });
 
 // Handle filter updates from Filters.vue
 const updateFilters = (newFilters: any) => {
-  console.log(filters);
   filters.value = newFilters;
 };
 
