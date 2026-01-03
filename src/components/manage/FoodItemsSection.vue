@@ -19,7 +19,7 @@ interface FoodItem {
 const baseStore = useBaseStore();
 
 const foodItemsCopy = ref<FoodItem[]>(
-  JSON.parse(localStorage.getItem("data") || "null")?.items || []
+  JSON.parse(localStorage.getItem("data") || "null")?.menu?.items || []
 );
 const foodItems = ref(foodItemsCopy.value);
 const searchValue = ref("");

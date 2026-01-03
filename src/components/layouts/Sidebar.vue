@@ -12,7 +12,7 @@ interface Filter {
 const baseStore = useBaseStore();
 
 // Retrieve filters from localStorage and ensure it's typed correctly
-const filters = ref<Filter[]>(JSON.parse(localStorage.getItem("data") || "null")?.filters || []);
+const filters = ref<Filter[]>(JSON.parse(localStorage.getItem("data") || "null")?.menu?.filters || []);
 
 </script>
 
