@@ -44,7 +44,7 @@ export const useBaseStore = defineStore('base', {
     darkMode: false,
     selectedFilter: (() => {
       const data = JSON.parse(localStorage.getItem("data") || "null");
-      return Array.isArray(data?.filters) && data.filters.length > 0 ? data.filters[0] : [];
+      return Array.isArray(data?.menu?.filters) && data?.menu?.filters.length > 0 ? data?.menu?.filters[0] : [];
     })(),    
     selectedFoodArray: [] as Food[],
     paymentType: 'cash' as 'cash' | 'card' | 'upi',
@@ -115,7 +115,7 @@ export const useBaseStore = defineStore('base', {
     },
     // Method to reset the store data to its default values
     resetData() {
-      this.selectedFilter = (JSON.parse(localStorage.getItem("data") || "null")?.filters[0]) || [];
+      this.selectedFilter = (JSON.parse(localStorage.getItem("data") || "null")?.menu?.filters[0]) || [];
       this.selectedFoodArray = [];
       this.selectedTableData = null;
       this.paymentType = 'cash';
