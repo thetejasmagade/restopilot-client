@@ -109,7 +109,7 @@ const tableClickHandler = (tableData: SelectedTableData, id: any) => {
         <div class="flex items-center justify-between md:justify-start gap-2">
           <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0">
             <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
-              <div :class="info.classes" class="w-6 h-6 rounded-full border-2 border-dashed" />
+              <div :class="info.classes" class="w-6 h-6 rounded border-2 border-dashed" />
               <div>{{ info.name }}</div>
             </div>
           </div>
