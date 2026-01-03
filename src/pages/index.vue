@@ -35,7 +35,7 @@ const tablesInfo = [
 ];
 
 const refreshing = ref(false);
-const tablesData = ref();
+const tablesData = ref(JSON.parse(localStorage.getItem("data") || "null")?.table_data || []);
 onMounted(async () => {
   if (is_authenticated.value && userType.value == 'billing') await fetchTablesData(false);
   baseStore.selectedTableDataHandler(null);
