@@ -125,7 +125,7 @@ const tableClickHandler = (tableData: SelectedTableData, id: any) => {
       <div class="border-t pt-3 
          bg-[radial-gradient(circle,rgba(0,0,0,0.15)_1px,transparent_1px)]
          dark:bg-[radial-gradient(circle,rgba(255,255,255,0.15)_1px,transparent_1px)]
-         bg-[size:16px_16px]">
+         bg-[size:16px_16px] h-[86vh] overflow-y-auto">
         <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8 px-4">
           <h2 class="text-primary font-semibold mb-2">
             {{ tableData.area_name }}
