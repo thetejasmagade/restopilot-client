@@ -83,7 +83,7 @@ interface SelectedTableData {
   tables: any;
 }
 
-const tableClickHandler = (tableData: SelectedTableData, id: number) => {
+const tableClickHandler = (tableData: SelectedTableData, id: any) => {
   console.log(tableData.tables[id].items);
   if (tableData.tables[id].items.length > 0)
     baseStore.isFoodItemsSectionOpen = false;
@@ -103,68 +103,54 @@ const tableClickHandler = (tableData: SelectedTableData, id: number) => {
 
 <template>
   <section>
-    <div v-if="is_authenticated && userType == 'billing'"
-    class="overflow-y-auto h-[93vh]">
-      <div class="p-4 block md:flex items-center justify-between">
+    <div v-if="is_authenticated && userType == 'billing'" class="overflow-y-auto h-[93vh]">
+      <div class="p-2 block md:flex items-center justify-between">
         <h3 class="text-xl font-semibold">Manage Tables</h3>
         <div class="flex items-center justify-between md:justify-start gap-2">
-          <div
-            class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0"
-          >
-            <div
-              v-for="(info, i) in tablesInfo"
-              :key="i"
-              class="flex items-center justify-start gap-2"
-            >
-              <div
-                :class="info.classes"
-                class="w-6 h-6 rounded-full border-2 border-dashed"
-              />
+          <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0">
+            <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
+              <div :class="info.classes" class="w-6 h-6 rounded-full border-2 border-dashed" />
               <div>{{ info.name }}</div>
             </div>
           </div>
           <Button @click="fetchTablesData(true)">
-            <img
-              src="@/assets/icons/base/refresh.svg"
-              class="h-4 w-4"
-              :class="
-                refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''
-              "
-            />
+            <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''
+              " />
             <span class="hidden md:block">Refresh</span>
           </Button>
         </div>
       </div>
-      <Separator class="mb-3" />
+      <!-- <Separator class="mb-3" /> -->
       <!-- Loop through each table group -->
-      <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8 px-4">
-        <h2 class="text-primary font-semibold mb-2">
-          {{ tableData.area_name }}
-        </h2>
+      <div class="border-t pt-3 
+         bg-[radial-gradient(circle,rgba(0,0,0,0.15)_1px,transparent_1px)]
+         dark:bg-[radial-gradient(circle,rgba(255,255,255,0.15)_1px,transparent_1px)]
+         bg-[size:16px_16px]">
+        <div v-for="(tableData, i) in tablesData" :key="i" class="mb-8 px-4">
+          <h2 class="text-primary font-semibold mb-2">
+            {{ tableData.area_name }}
+          </h2>
 
-        <!-- Responsive grid layout: 2 columns on very small screens, then increasing -->
-        <div
-          class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-12 gap-4"
-        >
-          <!-- Loop through each table -->
-          <div v-for="(table, j) in tableData.tables" :key="j">
-            <div
-              @click="tableClickHandler(tableData, j)"
-              class="aspect-square rounded-md border-2 border-dashed cursor-pointer p-2 flex flex-col justify-center items-center transition-colors duration-300"
-              :class="{
-                'bg-gray-200 hover:bg-gray-300 dark:bg-gray-900 dark:hover:bg-gray-950 border-gray-400':
-                  table.status === 0,
-                'bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400':
-                  table.status === 1,
-                'bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400':
-                  table.status !== 0 && table.status !== 1,
-              }"
-            >
-              <div class="font-semibold">
-                {{ table.table_name }}
-              </div>
-              <div v-if="table.status !== 0" class="mt-3">
-                {{ table.total_amt + ".00 ₹" }}
+          <!-- Responsive grid layout: 2 columns on very small screens, then increasing -->
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-12 gap-4">
+            <!-- Loop through each table -->
+            <div v-for="(table, j) in tableData.tables" :key="j">
+              <div @click="tableClickHandler(tableData, j)"
+                class="aspect-square rounded-md border-2 border-dashed cursor-pointer p-2 flex flex-col justify-center items-center transition-colors duration-300"
+                :class="{
+                  'bg-gray-200 hover:bg-gray-300 dark:bg-gray-900 dark:hover:bg-gray-950 border-gray-400':
+                    table.status === 0,
+                  'bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400':
+                    table.status === 1,
+                  'bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400':
+                    table.status !== 0 && table.status !== 1,
+                }">
+                <div class="font-semibold">
+                  {{ table.table_name }}
+                </div>
+                <div v-if="table.status !== 0" class="mt-3">
+                  {{ table.total_amt + ".00 ₹" }}
+                </div>
               </div>
             </div>
           </div>
