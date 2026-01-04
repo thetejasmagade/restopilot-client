@@ -33,14 +33,14 @@ const tablesInfo = [
       "bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400",
   },
   {
-    name: "Done",
-    classes:
-      "bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400",
-  },
-  {
     name: "Needs Cleaning",
     classes:
       "bg-red-200 hover:bg-red-300 dark:bg-red-800 dark:hover:bg-red-900 border-red-400",
+  },
+  {
+    name: "Done",
+    classes:
+      "bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400",
   },
 ];
 
@@ -95,7 +95,7 @@ interface SelectedTableData {
 
 const tableClickHandler = async (tableData: SelectedTableData, id: any) => {
   console.log(tableData.tables[id], tableData);
-  if (tableData.tables[id].status == 2) {
+  if (tableData.tables[id].status == 3) {
     // Send update to server when table status is 2
     try {
       const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-table-status`;
@@ -136,57 +136,73 @@ const tableClickHandler = async (tableData: SelectedTableData, id: any) => {
 
 const updateSpecificTable = async (response: any) => {
   // Get stored data
-    const data = JSON.parse(localStorage.getItem("data") || "{}");
-    const tableData = Array.isArray(data.table_data) ? data.table_data : [];
+  const data = JSON.parse(localStorage.getItem("data") || "{}");
+  const tableData = Array.isArray(data.table_data) ? data.table_data : [];
 
-    // API response
-    const responseData = await response.json();
+  // API response
+  const responseData = await response.json();
 
-    // Find index of matching record
-    const index = tableData.findIndex(
-      (item: TableItem ) => item.id === responseData.id
+  // Find index of matching record
+  const index = tableData.findIndex(
+    (item: TableItem) => item.id === responseData.id
+  );
+
+  if (index !== -1) {
+    // Update only that record (merge or replace)
+    tableData[index] = {
+      ...tableData[index], // keep old fields if any
+      ...responseData      // overwrite with latest response
+    };
+
+    // Save back to localStorage
+    localStorage.setItem(
+      "data",
+      JSON.stringify({
+        ...data,
+        table_data: tableData
+      })
     );
-
-    if (index !== -1) {
-      // Update only that record (merge or replace)
-      tableData[index] = {
-        ...tableData[index], // keep old fields if any
-        ...responseData      // overwrite with latest response
-      };
-
-      // Save back to localStorage
-      localStorage.setItem(
-        "data",
-        JSON.stringify({
-          ...data,
-          table_data: tableData
-        })
-      );
-      // Update reactive ref so UI updates immediately
-      tablesData.value = tableData;
-    }
+    // Update reactive ref so UI updates immediately
+    tablesData.value = tableData;
+  }
 }
 </script>
 
 <template>
   <section>
     <div v-if="is_authenticated && userType == 'billing'" class="overflow-y-auto h-[93vh]">
-      <div class="p-2 block md:flex items-center justify-between">
-        <h3 class="text-xl font-semibold">Manage Tables</h3>
+      <div class="p-2 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <!-- ================= Left / Title ================= -->
+        <div class="flex items-center justify-between md:justify-start">
+          <h3 class="text-xl font-semibold">Manage Tables</h3>
+
+          <!-- Mobile Refresh -->
+          <Button class="md:hidden" @click="fetchTablesData(true)">
+            <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4"
+              :class="refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''" />
+            <span>Refresh</span>
+          </Button>
+        </div>
+
+        <!-- ================= Status + Desktop Refresh ================= -->
         <div class="flex items-center justify-between md:justify-start gap-2">
-          <div class="flex items-center justify-start md:justify-center gap-3 mt-2 md:mt-0 mb-2 md:mb-0">
-            <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center justify-start gap-2">
-              <div :class="info.classes" class="w-6 h-6 rounded border-2 border-dashed" />
+          <!-- Status Info -->
+          <div class="flex flex-wrap items-center justify-start md:justify-center gap-3">
+            <div v-for="(info, i) in tablesInfo" :key="i" class="flex items-center gap-2">
+              <div :class="info.classes" class="w-6 h-6 rounded border-2 border-dashed"></div>
               <div>{{ info.name }}</div>
             </div>
           </div>
-          <Button @click="fetchTablesData(true)">
-            <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4" :class="refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''
-              " />
-            <span class="hidden md:block">Refresh</span>
+
+          <!-- Desktop Refresh -->
+          <Button class="hidden md:flex items-center gap-2" @click="fetchTablesData(true)">
+            <img src="@/assets/icons/base/refresh.svg" class="h-4 w-4"
+              :class="refreshing ? 'animate-[spin_1s_linear_infinite_reverse]' : ''" />
+            <span>Refresh</span>
           </Button>
         </div>
       </div>
+
       <!-- <Separator class="mb-3" /> -->
       <!-- Loop through each table group -->
       <div class="border-t pt-3 
@@ -209,15 +225,15 @@ const updateSpecificTable = async (response: any) => {
                     table.status === 0,
                   'bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400':
                     table.status === 1,
-                  'bg-red-200 hover:bg-red-300 dark:bg-red-700 dark:hover:bg-red-800 border-red-400':
-                    table.status === 2,
                   'bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400':
-                    table.status !== 0 && table.status !== 1 && table.status !== 1,
+                    table.status === 2,
+                  'bg-red-200 hover:bg-red-300 dark:bg-red-700 dark:hover:bg-red-800 border-red-400':
+                    table.status === 3,
                 }">
                 <div class="font-semibold">
                   {{ table.table_name }}
                 </div>
-                <div v-if="table.status !== 0 && table.status !== 2" class="mt-3">
+                <div v-if="table.status !== 0 && table.status !== 3" class="mt-3">
                   {{ table.total_amt + ".00 ₹" }}
                 </div>
               </div>
