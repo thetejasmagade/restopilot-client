@@ -7,6 +7,11 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { useBaseStore } from "@/stores/useBaseStore";
 
+interface TableItem {
+  id: number | string;
+  [key: string]: any;
+}
+
 const { toast } = useToast();
 const baseStore = useBaseStore();
 const router = useRouter();
@@ -31,6 +36,11 @@ const tablesInfo = [
     name: "Done",
     classes:
       "bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400",
+  },
+  {
+    name: "Needs Cleaning",
+    classes:
+      "bg-red-200 hover:bg-red-300 dark:bg-red-800 dark:hover:bg-red-900 border-red-400",
   },
 ];
 
@@ -83,8 +93,32 @@ interface SelectedTableData {
   tables: any;
 }
 
-const tableClickHandler = (tableData: SelectedTableData, id: any) => {
-  console.log(tableData.tables[id].items);
+const tableClickHandler = async (tableData: SelectedTableData, id: any) => {
+  console.log(tableData.tables[id], tableData);
+  if (tableData.tables[id].status == 2) {
+    // Send update to server when table status is 2
+    try {
+      const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-table-status`;
+      const body = {
+        mobile: Number(localStorage.getItem("mobile_no")),
+        table_data_id: tableData.id,
+        table_id: tableData.tables[id].id,
+        status: 0,
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      // const respData = await response.json();
+      await updateSpecificTable(response);
+    } catch (err) {
+      console.error("Error updating table status:", err);
+    }
+
+    return;
+  }
   if (tableData.tables[id].items.length > 0)
     baseStore.isFoodItemsSectionOpen = false;
   else baseStore.isFoodItemsSectionOpen = true;
@@ -99,6 +133,39 @@ const tableClickHandler = (tableData: SelectedTableData, id: any) => {
   router.push("/manage");
   // baseStore.hello();
 };
+
+const updateSpecificTable = async (response: any) => {
+  // Get stored data
+    const data = JSON.parse(localStorage.getItem("data") || "{}");
+    const tableData = Array.isArray(data.table_data) ? data.table_data : [];
+
+    // API response
+    const responseData = await response.json();
+
+    // Find index of matching record
+    const index = tableData.findIndex(
+      (item: TableItem ) => item.id === responseData.id
+    );
+
+    if (index !== -1) {
+      // Update only that record (merge or replace)
+      tableData[index] = {
+        ...tableData[index], // keep old fields if any
+        ...responseData      // overwrite with latest response
+      };
+
+      // Save back to localStorage
+      localStorage.setItem(
+        "data",
+        JSON.stringify({
+          ...data,
+          table_data: tableData
+        })
+      );
+      // Update reactive ref so UI updates immediately
+      tablesData.value = tableData;
+    }
+}
 </script>
 
 <template>
@@ -142,13 +209,15 @@ const tableClickHandler = (tableData: SelectedTableData, id: any) => {
                     table.status === 0,
                   'bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 dark:hover:bg-yellow-800 border-yellow-400':
                     table.status === 1,
+                  'bg-red-200 hover:bg-red-300 dark:bg-red-700 dark:hover:bg-red-800 border-red-400':
+                    table.status === 2,
                   'bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-900 border-green-400':
-                    table.status !== 0 && table.status !== 1,
+                    table.status !== 0 && table.status !== 1 && table.status !== 1,
                 }">
                 <div class="font-semibold">
                   {{ table.table_name }}
                 </div>
-                <div v-if="table.status !== 0" class="mt-3">
+                <div v-if="table.status !== 0 && table.status !== 2" class="mt-3">
                   {{ table.total_amt + ".00 ₹" }}
                 </div>
               </div>
