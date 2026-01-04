@@ -8,6 +8,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import CustomerInfoModal from "@/components/manage/billing/CustomerInfoModal.vue";
 import { router } from "@/router";
 
+interface TableItem {
+  id: number | string;
+  [key: string]: any;
+}
+
 const baseStore = useBaseStore();
 
 const loading = ref({
@@ -64,6 +69,7 @@ const handleKOT = async () => {
     alert("Something went wrong...");
   } else {
     baseStore.resetData();
+    await updateSpecificTable(response);
     router.push("/");
   }
 };
@@ -89,9 +95,41 @@ const handleTempSave = async () => {
     alert("Issue in updating record");
   } else {
     baseStore.resetData();
+    await updateSpecificTable(response);
     router.push("/");
   }
 };
+
+const updateSpecificTable = async (response: any) => {
+  // Get stored data
+    const data = JSON.parse(localStorage.getItem("data") || "{}");
+    const tableData = Array.isArray(data.table_data) ? data.table_data : [];
+
+    // API response
+    const responseData = await response.json();
+
+    // Find index of matching record
+    const index = tableData.findIndex(
+      (item: TableItem ) => item.id === responseData.id
+    );
+
+    if (index !== -1) {
+      // Update only that record (merge or replace)
+      tableData[index] = {
+        ...tableData[index], // keep old fields if any
+        ...responseData      // overwrite with latest response
+      };
+
+      // Save back to localStorage
+      localStorage.setItem(
+        "data",
+        JSON.stringify({
+          ...data,
+          table_data: tableData
+        })
+      );
+    }
+}
 </script>
 
 <template>
