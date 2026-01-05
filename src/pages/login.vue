@@ -20,7 +20,7 @@ const isLoading = ref(false); // Loading state
 // Handle login form submission
 const handleLogin = async () => {
   isLoading.value = true; // Start loading
-  const url = `${import.meta.env.VITE_SERVER_BASE_URL} restaurants`;
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants`;
   const userData = {
     user_type: userType.value,
     mobile: mobile.value,
