@@ -21,9 +21,9 @@ const baseStore = useBaseStore();
 const router = useRouter();
 const isLoading = ref(false);
 
-const handleSaveAndEbill = async () => {
+const handleSettleBill = async () => {
   isLoading.value = true;
-  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/save-ebill`;
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/settle-save-bill`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
     table_data_id: baseStore.selectedTableData?.id,
@@ -75,7 +75,7 @@ const handleApply = (val: any) => {
       <Button
         :disabled="baseStore.selectedFoodArray.length == 0"
         class="w-full bg-green-700 hover:bg-green-800"
-        >Save & eBill</Button>
+        >Settle & Save Bill</Button>
     </DialogTrigger>
     <DialogContent class="max-w-[90vw] md:max-w-[425px] font-inter rounded-lg">
       <DialogHeader>
@@ -109,7 +109,7 @@ const handleApply = (val: any) => {
       </div>
 
       <DialogFooter>
-        <Button type="submit" @click="handleSaveAndEbill">
+        <Button type="submit" @click="handleSettleBill">
           <div
           v-if="isLoading"
             class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"

@@ -47,7 +47,7 @@ const handleInputChange = (id: number, event: Event) => {
 
 const handleKOT = async () => {
   loading.value.kot = true;
-  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-kot`;
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/send-kot`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
     table_data_id: baseStore.selectedTableData?.id,
@@ -74,9 +74,9 @@ const handleKOT = async () => {
   }
 };
 
-const handleTempSave = async () => {
+const makeBillHandler = async () => {
   loading.value.save = true;
-  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/temp-save`;
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/make-bill`;
   const tableData = {
     mobile: Number(localStorage.getItem("mobile_no")),
     table_data_id: baseStore.selectedTableData?.id,
@@ -306,11 +306,11 @@ const updateSpecificTable = async (response: any) => {
           v-if="loading.kot"
             class="w-3 h-3 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin"
           ></div>
-          <span v-else>KOT</span>
+          <span v-else>Send KOT</span>
         </Button>
         <Button
           class="w-full"
-          @click="handleTempSave"
+          @click="makeBillHandler"
           :disabled="
             baseStore.selectedTableData
               ? baseStore.selectedTableData.table.status != 1
@@ -320,7 +320,7 @@ const updateSpecificTable = async (response: any) => {
           v-if="loading.save"
             class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"
           ></div>
-          <span v-else>Save</span></Button
+          <span v-else>Make Bill</span></Button
         >
         <!-- <Button
           class="w-full bg-green-700 hover:bg-green-800"

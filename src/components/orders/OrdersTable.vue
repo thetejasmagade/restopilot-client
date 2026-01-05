@@ -61,7 +61,7 @@ const fetchData = async (isFromRefresh: any) => {
     };
 
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_BASE_URL}users/orders`,
+      `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/orders`,
       {
         method: "POST",
         headers: {

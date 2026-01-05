@@ -53,7 +53,7 @@ onMounted(async () => {
 
 const fetchTablesData = async (isFromRefresh: any) => {
   if (isFromRefresh == true) refreshing.value = true;
-  const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/get-tables-data`;
+  const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/get-tables-data`;
   const userData = {
     mobile: Number(localStorage.getItem("mobile_no")),
   };
@@ -72,6 +72,11 @@ const fetchTablesData = async (isFromRefresh: any) => {
     console.log(data);
     if (response.ok) {
       tablesData.value = data;
+      const storedData = JSON.parse(localStorage.getItem("data") || "{}");
+      localStorage.setItem(
+        "data",
+        JSON.stringify({ ...storedData, table_data: data })
+      );
     } else {
       toast({
         title: "Uh oh! Something went wrong.",
@@ -98,7 +103,7 @@ const tableClickHandler = async (tableData: SelectedTableData, id: any) => {
   if (tableData.tables[id].status == 3) {
     // Send update to server when table status is 2
     try {
-      const url = `${import.meta.env.VITE_SERVER_BASE_URL}users/update-table-status`;
+      const url = `${import.meta.env.VITE_SERVER_BASE_URL}restaurants/update-table-status`;
       const body = {
         mobile: Number(localStorage.getItem("mobile_no")),
         table_data_id: tableData.id,
